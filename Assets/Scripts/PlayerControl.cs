@@ -9,6 +9,7 @@ public class PlayerControl : MonoBehaviour
     float jumpForce = 7f;
     public float health = 3;
     Rigidbody playerRb;
+    GameManager gameManager;
     bool isOnGround = true;
     public bool gameOver = false;
     public GameObject speedUpIndicator;
@@ -17,6 +18,7 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -65,13 +67,13 @@ public class PlayerControl : MonoBehaviour
     void PlayerMovement()
     {
         // Move the player left or right depending on user input if the game is not over
-        if (!gameOver)
+        if (!gameOver && gameManager.gameStarted)
         {
             horizontalInput = Input.GetAxis("Horizontal");
             playerRb.MovePosition(playerRb.position + Vector3.right * horizontalInput * speed * Time.deltaTime);
         }
         // Make the player jump when "Space" is pressed
-        if (Input.GetKeyDown(KeyCode.Space) && isOnGround && !gameOver)
+        if (Input.GetKeyDown(KeyCode.Space) && isOnGround && !gameOver && gameManager.gameStarted)
         {
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isOnGround = false;

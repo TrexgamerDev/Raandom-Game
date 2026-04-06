@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public bool gameStarted;
     float spawnBounds = 15f;
     float spawnStartDelay = 2f;
     float fallingSpawnStartDelay = 3f;
@@ -16,26 +17,21 @@ public class GameManager : MonoBehaviour
     public GameObject fallingEnemy;
     public GameObject lifeUp;
     public GameObject speedUp;
-    TextMeshProUGUI scoreText;
-    TextMeshProUGUI healthText;
+    public GameObject titleScreen;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI healthText;
     public TextMeshProUGUI gameOverText;
     public Button restartButton;
+    public Button startButton;
     PlayerControl playerControl;
     Vector3 spawnPos = new Vector3(19, 0.5f, 0);
     Vector3 fallingSpawnPos;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        score = 0;
+        gameStarted = false;
         // Get PlayerControl script reference
         playerControl = GameObject.Find("Player").GetComponent<PlayerControl>();
-        // Get the text UI elements
-        scoreText = GameObject.Find("Score Text").GetComponent<TextMeshProUGUI>();
-        healthText = GameObject.Find("Health Text").GetComponent<TextMeshProUGUI>();
-        // Invoke spawning methods
-        InvokeRepeating("SpawnEnemy", spawnStartDelay, spawnInterval);
-        InvokeRepeating("SpawnPowerUp", powerUpSpawnStartDelay, powerUpSpawnInterval);
-        InvokeRepeating("SpawnFallingEnemy", fallingSpawnStartDelay, spawnInterval);
     }
 
     // Update is called once per frame
@@ -85,5 +81,15 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    public void StartGame()
+    {
+        score = 0;
+        // Invoke spawning methods
+        InvokeRepeating("SpawnEnemy", spawnStartDelay, spawnInterval);
+        InvokeRepeating("SpawnPowerUp", powerUpSpawnStartDelay, powerUpSpawnInterval);
+        InvokeRepeating("SpawnFallingEnemy", fallingSpawnStartDelay, spawnInterval);
+        titleScreen.SetActive(false);
+        gameStarted = true;
     }
 }
