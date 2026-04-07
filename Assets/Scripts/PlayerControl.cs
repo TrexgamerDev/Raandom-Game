@@ -39,14 +39,17 @@ public class PlayerControl : MonoBehaviour
         {
             // Reduce health if hit by an enemy
             health -= 1;
+            AudioSource.PlayClipAtPoint(gameManager.enemyHitSfx.clip, transform.position, 1f);
         }
         else if (collision.gameObject.CompareTag("LifeUp"))
         {
             health += 1;
+            AudioSource.PlayClipAtPoint(gameManager.powerUpSfx.clip, transform.position, 1f);
         }
         else if (collision.gameObject.CompareTag("SpeedUp"))
         {
             StartCoroutine(SpeedUpCountdown());
+            AudioSource.PlayClipAtPoint(gameManager.powerUpSfx.clip, transform.position, 1f);
         }
     }
     IEnumerator SpeedUpCountdown()
@@ -87,6 +90,5 @@ public class PlayerControl : MonoBehaviour
         {
             transform.position = new Vector3(bounds, transform.position.y, transform.position.z);
         }
-
     }
 }

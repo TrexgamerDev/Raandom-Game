@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public bool gameStarted;
     public bool isPaused;
+    bool gameOverSfxPlayed;
     float spawnBounds = 15f;
     float spawnStartDelay = 2f;
     float fallingSpawnStartDelay = 3f;
@@ -25,6 +26,12 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI pausedText;
     public Button restartButton;
     public Button startButton;
+    public Slider volumeSlider;
+    AudioSource[] audioSources;
+    AudioSource musicSource;
+    AudioSource gameOverSfx;
+    public AudioSource powerUpSfx;
+    public AudioSource enemyHitSfx;
     PlayerControl playerControl;
     Vector3 spawnPos = new Vector3(19, 0.5f, 0);
     Vector3 fallingSpawnPos;
@@ -33,6 +40,13 @@ public class GameManager : MonoBehaviour
     {
         gameStarted = false;
         isPaused = false;
+        gameOverSfxPlayed = false;
+        // Get music audio source reference
+        audioSources = GetComponents<AudioSource>();
+        musicSource = audioSources[0];
+        gameOverSfx = audioSources[1];
+        powerUpSfx = audioSources[2];
+        enemyHitSfx = audioSources[3];
         // Get PlayerControl script reference
         playerControl = GameObject.Find("Player").GetComponent<PlayerControl>();
     }
@@ -40,6 +54,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        musicSource.volume = volumeSlider.value;
         IsGameOver();
         // Update text UI elements
         scoreText.text = "Score: " + score;
@@ -83,10 +98,12 @@ public class GameManager : MonoBehaviour
     }
     void IsGameOver()
     {
-        if (playerControl.gameOver)
+        if (playerControl.gameOver && !gameOverSfxPlayed)
         {
             gameOverText.gameObject.SetActive(true);
             restartButton.gameObject.SetActive(true);
+            gameOverSfx.PlayOneShot(gameOverSfx.clip, 1f);
+            gameOverSfxPlayed = true;
         }
     }
     public void RestartGame()
