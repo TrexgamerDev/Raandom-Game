@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public bool gameStarted;
+    public bool isPaused;
     float spawnBounds = 15f;
     float spawnStartDelay = 2f;
     float fallingSpawnStartDelay = 3f;
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI healthText;
     public TextMeshProUGUI gameOverText;
+    public TextMeshProUGUI pausedText;
     public Button restartButton;
     public Button startButton;
     PlayerControl playerControl;
@@ -30,6 +32,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         gameStarted = false;
+        isPaused = false;
         // Get PlayerControl script reference
         playerControl = GameObject.Find("Player").GetComponent<PlayerControl>();
     }
@@ -41,6 +44,14 @@ public class GameManager : MonoBehaviour
         // Update text UI elements
         scoreText.text = "Score: " + score;
         healthText.text = "Health: " + playerControl.health;
+        if (Input.GetKeyDown(KeyCode.Escape) && !isPaused)
+        {
+            PauseGame();
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && isPaused)
+        {
+            UnpauseGame();
+        }
     }
     void SpawnEnemy()
     {
@@ -91,5 +102,20 @@ public class GameManager : MonoBehaviour
         InvokeRepeating("SpawnFallingEnemy", fallingSpawnStartDelay, spawnInterval);
         titleScreen.SetActive(false);
         gameStarted = true;
+    }
+    void PauseGame()
+    {
+        if (gameStarted && !playerControl.gameOver)
+        {
+            isPaused = true;
+            pausedText.gameObject.SetActive(true);
+            Time.timeScale = 0;
+        }
+    }
+    void UnpauseGame()
+    {
+        isPaused = false;
+        pausedText.gameObject.SetActive(false);
+        Time.timeScale = 1;
     }
 }
